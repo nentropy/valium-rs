@@ -1,48 +1,49 @@
-# Datasets Rustified 🔥🤗
+# LLM Validator 🔒⚡️
 
-A Rust implementation inspired by Hugging Face's `datasets` library, built for efficiency, scalability, and concurrent processing of large datasets. This library provides utilities to load data from multiple formats—CSV, JSON, and Parquet—and transform them into `DataFrame` objects using `Polars`. It also supports splitting datasets into training and test sets, offering flexibility for machine learning workflows. The library is designed to be highly concurrent, leveraging `Rayon` to maximize performance when handling large datasets.
+`LLM Validator` is a concurrent, multi-threaded Rust tool designed for securing interactions with Large Language Models (LLMs). This project ensures safety by validating both incoming and outgoing messages, detecting potential prompt injection attacks, and other malicious patterns. Built for scalability and speed, it uses multiple threads to handle real-time streaming data or file-based inputs, ensuring robust LLM protection in high-performance environments.
 
 ### Features
-- **Concurrent Data Loading**: Load datasets from CSV, JSON, and Parquet formats efficiently using `Polars` and `Rayon`.
-- **Flexible Formats**: Supports input data from CSV, JSON, and Parquet formats, and converts them into a Polars `DataFrame` for further processing.
-- **Train-Test Split**: Split datasets into training and testing sets with a user-specified test ratio.
-- **UUID & Timestamp**: Each dataset session is uniquely identified with a UUID and timestamp, making dataset tracking and auditing seamless.
+- **Concurrent Input Validation**: Identifies harmful patterns such as SQL injection, command injection, and offensive language in user inputs.
+- **Concurrent Output Validation**: Monitors LLM responses for sensitive data leakage or internal system information.
+- **Dynamic Pattern Management**: Fetches validation patterns dynamically from a PostgreSQL database.
+- **Flexible Execution Modes**: Supports real-time validation from live streams or file-based input/output depending on the environment configuration (`RUN_LIVE`).
+- **Highly Scalable**: Built using Rust's fearless concurrency and async I/O to handle multiple validation checks concurrently.
 
 ### Operations
 
-- **Loading a Dataset**:
-  - Load a dataset from a CSV file:
-    ```rust
-    let data_dict = DataDict::from_csv("dataset.csv")?;
-    ```
-  - Load a dataset from a JSON file:
-    ```rust
-    let data_dict = DataDict::from_json("dataset.json")?;
-    ```
-  - Load a dataset from a Parquet file:
-    ```rust
-    let data_dict = DataDict::from_parquet("dataset.parquet")?;
+- **Run in Live Mode**:
+  - Perform real-time input and output validation:
+    ```bash
+    RUN_LIVE=true cargo run
     ```
 
-- **Splitting a Dataset**:
-  - Split a dataset into train and test sets with a test ratio of 20%:
-    ```rust
-    let (train_set, test_set) = data_dict.train_test_split(0.2);
+- **File-Based Validation**:
+  - Validate input and output using static files:
+    ```bash
+    RUN_LIVE=false cargo run
     ```
 
-- **Saving a Dataset**:
-  - Save the dataset as CSV:
-    ```rust
-    train_set.save_as_csv("train_set.csv")?;
-    ```
-  - Save the dataset as JSON:
-    ```rust
-    train_set.save_as_json("train_set.json")?;
-    ```
-  - Save the dataset as Parquet:
-    ```rust
-    train_set.save_as_parquet("train_set.parquet")?;
-    ```
+### Installation
+
+1. Install Rust and Cargo.
+2. Set up PostgreSQL and create necessary tables for pattern management.
+3. Clone the repository and configure the `.env` file with the database URL and environment mode.
+
+### Example Usage
+
+- **Input Validation**:
+  Validate incoming data for harmful patterns:
+  ```rust
+  let input_data = "User input here";
+  validate_input(input_data, &db).await?;
+  ```
+
+- **Output Validation**:
+  Validate outgoing LLM responses for sensitive data:
+  ```rust
+  let output_data = "LLM output here";
+  validate_output(output_data, &db).await?;
+  ```
 
 ### License
 
@@ -50,13 +51,12 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ### Contributing
 
-We welcome contributions to `Datasets Rustified`! Feel free to submit issues, feature requests, or pull requests. When contributing, please ensure that you follow Rust's best practices and format code with `rustfmt`. Contributions that improve performance, add new data formats, or enhance documentation are greatly appreciated.
+Contributions are welcome! Please ensure code quality by following Rust's best practices and using `rustfmt` for formatting. We encourage adding new validation patterns and improving system efficiency.
 
 ### Improvements
-  - **Additional Formats**: Extend support to more formats like Arrow, HDF5, and more complex dataset types.
-  - **Customizable DataFrame Operations**: Add the ability for users to apply custom transformations on the DataFrame before or after loading.
-  - **Lazy Data Loading**: Implement lazy loading of large datasets for memory-efficient processing.
-  - **Benchmarking & Optimization**: Introduce performance benchmarks for various dataset sizes to highlight concurrency and efficiency improvements.
-  - **Advanced Dataset Transformations**: Add support for data augmentation, shuffling, and batching commonly used in machine learning workflows.
+  - **Extend Pattern Library**: Add more patterns for detection, including new types of injections and security vulnerabilities.
+  - **Benchmarking & Optimizations**: Introduce benchmarking to measure performance under heavy loads.
+  - **Machine Learning Integration**: Use ML models to detect patterns not easily captured by regex-based filters.
+  - **Enhanced Data Handling**: Add support for additional data sources and formats in live validation mode.
 
 ---
