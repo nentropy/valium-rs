@@ -21,5 +21,6 @@ sqlx = { version = "0.5", features = ["runtime-tokio-native-tls", "postgres"] }
 crossbeam-channel = "0.5"
 rust-bert = "0.19.0"
 tokenizers = "0.14.0"
+psql = "0.0.0"
 
 

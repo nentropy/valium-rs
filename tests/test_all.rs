@@ -68,4 +68,42 @@ mod tests {
             fs::remove_file("input.txt").unwrap();
             fs::remove_file("output.txt").unwrap();
         }
+
+    #[tokio::test]
+    async fn validates_output_without_sensitive_data() {
+        use crate::validate_output;
+        use crate::ValidationError;
+
+        let result = validate_output("This is a safe string").await;
+        assert!(result.is_ok());
+}
+    #[tokio::test]
+    async fn handles_empty_string_input() {
+        use crate::validate_output;
+        use crate::ValidationError;
+
+        let result = validate_output("").await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    async fn valid_input_returns_ok() {
+        use crate::input_filters::validate_input;
+        let input = "SELECT * FROM users";
+        let result = validate_input(input).await;
+        assert!(result.is_ok());
+    }
+
+        // Input string containing "DROP TABLE" returns ValidationError
+    #[tokio::test]
+    async fn input_with_drop_table_returns_error() {
+        use crate::input_filters::validate_input;
+        let input = "DROP TABLE users";
+        let result = validate_input(input).await;
+        assert!(result.is_err());
+        if let Err(e) = result {
+            assert_eq!(e.to_string(), "Disallowed token found.");
+        }
+    }
+
 }

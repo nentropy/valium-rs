@@ -1633,6 +1633,7 @@ dependencies = [
  "dotenv",
  "env_logger",
  "log",
+ "psql",
  "rayon",
  "regex",
  "rust-bert",
@@ -2131,6 +2132,12 @@ name = "protobuf"
 version = "2.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf7e6d18738ecd0902d30d1ad232c9125985a3422929b16c65517b38adc14f96"
+
+[[package]]
+name = "psql"
+version = "0.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "603d1d91762dc80ec7e4d57e1d680e88eda0ddd925e03b597218dea68ce11bdb"
 
 [[package]]
 name = "quote"
